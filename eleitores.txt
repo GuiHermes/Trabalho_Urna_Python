@@ -1,0 +1,20 @@
+Pedro de Assis, MG17845369, 015443020272, Formiga, MG
+Carla Machado, SP156987456, 848242120221, Osasco, SP
+Luís Silva, RS16457956, 73278703030, Santa Maria, RS
+Ana Carolina Oliveira, MG12345678, 111222333444, Belo Horizonte, MG
+Rafael Costa, SP87654321, 555666777888, São Paulo, SP
+Mariana Santos, RJ11223344, 999888777666, Rio de Janeiro, RJ
+Bruno Pereira, MG44556677, 444333222111, Uberaba, MG
+Juliana Almeida, SP99887766, 777888999000, Campinas, SP
+Carlos Eduardo Lima, RS22334455, 123456789012, Porto Alegre, RS
+Fernanda Rodrigues, MG66778899, 987654321098, Divinópolis, MG
+Roberto Nascimento, SP55443322, 456789123456, Santos, SP
+Amanda Costa, RJ77889900, 321654987321, Niterói, RJ
+Lucas Oliveira, MG11223344, 654987321654, Juiz de Fora, MG
+Patrícia Silva, SP66554433, 789123456789, Ribeirão Preto, SP
+Diego Martins, RS88990011, 147258369147, Caxias do Sul, RS
+Camila Ferreira, MG33445566, 258369147258, Montes Claros, MG
+Thiago Alves, SP77665544, 369147258369, Sorocaba, SP
+Letícia Souza, RJ44556677, 159753486215, Duque de Caxias, RJ
+Gabriel Lima, MG55667788, 357159486213, Poços de Caldas, MG
+Isabela Costa, SP88776655, 486213579426, São José dos Campos, SP
