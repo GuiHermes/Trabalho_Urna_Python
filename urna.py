@@ -1,4 +1,5 @@
 from os import system, name
+import pickle # Aula 19-11-2025 Ciclo 4
 import time
 
 """
@@ -20,6 +21,15 @@ def limpar_tela():
         system('clear')
 
 limpar_tela()
+
+
+# ==========================================================
+# VARIÁVEIS GLOBAIS
+# ==========================================================
+candidatos = []
+eleitores = []
+eleitores_file = ""
+candidatos_file = ""
 
 
 # ==========================================================
@@ -63,6 +73,8 @@ def lerArquivoCandidato():
         print(f"❌ Arquivo '{candidatos_file}' não encontrado.\n")
     except Exception as erro:
         print(f"❌ Erro ao ler o arquivo: {erro}\n") # Saída de Erro genérico, utilizando o Exception
+    input("\nPressione ENTER para retornar...")
+    return
 
 
 # ==========================================================
@@ -70,8 +82,14 @@ def lerArquivoCandidato():
 # ==========================================================
 def iniciarVotacao():
     limpar_tela()
-    """Aqui deve constar o algoritmo de votação"""
-    print("Aqui deve constar o algoritmo de iniciarVotacao()")
+    if len(candidatos) == 0: # [ if len(candidatos) == 0 or len(eleitores) == 0 ] Para as duas Leituras. Atual é Teste de condição de leitura de candidatos somente.
+        print("\n❌ Você deve carregar candidatos e eleitores antes de solicitar resultados.\n")
+        time.sleep(3)
+        input("\nPressione ENTER para retornar...")
+        return
+    limpar_tela()
+    """Aqui deve constar o algoritmo de mostrar_resultados()"""
+    print("Se você está vendo esta tela, \nsignifica que os arquivos foram lidos e esta função está funcionando corretamente.")
     input("\nPressione ENTER para retornar...")
     return
 
@@ -81,8 +99,14 @@ def iniciarVotacao():
 # ==========================================================
 def ApuracaoVotos():
     limpar_tela()
+    if len(candidatos) == 0: # [ if len(candidatos) == 0 or len(eleitores) == 0 ] Para as duas Leituras. Atual é Teste de condição de leitura de candidatos somente.
+        print("\n❌ Você deve carregar candidatos e eleitores antes de solicitar apuração de votos.\n")
+        time.sleep(3)
+        input("\nPressione ENTER para retornar...")
+        return
+    limpar_tela()
     """Aqui deve constar o algoritmo de apuracao_votos()"""
-    print("Aqui deve constar o algoritmo de ApuracaoVotos()")
+    print("Se você está vendo esta tela, \nsignifica que os arquivos foram lidos e esta função está funcionando corretamente.")
     input("\nPressione ENTER para retornar...")
     return
 
@@ -92,8 +116,8 @@ def ApuracaoVotos():
 # ==========================================================
 def lerArquivoEleitores():
     limpar_tela()
-    """Aqui deve constar o algoritmo de lerArquivoEleitores()"""
-    print("Aqui deve constar o algoritmo de lerArquivoEleitores()")
+    """Aqui deve constar o algoritmo de mostrar_resultados()"""
+    print("Aqui deve constar o algoritmo de mostrar_resultados()")
     input("\nPressione ENTER para retornar...")
     return
 
@@ -103,8 +127,14 @@ def lerArquivoEleitores():
 # ==========================================================
 def MostrarResultados():
     limpar_tela()
+    if len(candidatos) == 0: # [ if len(candidatos) == 0 or len(eleitores) == 0 ] Para as duas Leituras. Atual é Teste de condição de leitura de candidatos somente.
+        print("\n❌ Você deve carregar candidatos e eleitores antes de solicitar resultados.\n")
+        time.sleep(3)
+        input("\nPressione ENTER para retornar...")
+        return
+    limpar_tela()
     """Aqui deve constar o algoritmo de mostrar_resultados()"""
-    print("Aqui deve constar o algoritmo de MostrarResultados()")
+    print("Se você está vendo esta tela, \nsignifica que os arquivos foram lidos e esta função está funcionando corretamente.")
     input("\nPressione ENTER para retornar...")
     return
 
@@ -123,16 +153,16 @@ def menu():
         print("4 - Apurar votos")
         print("5 - Mostrar resultados")
         print("6 - Fechar programa")
-        print("=" * 39)
+        print("=" * 38)
         try:
             opcaoMenu = int(input("Digite a opção desejada: "))
             match opcaoMenu:
                 case 1:
                     lerArquivoCandidato()
                 case 2:
-                    lerArquivoEleitores()#FALTA IMPLEMENTAR
+                    lerArquivoEleitores()
                 case 3:
-                    iniciarVotacao()#FALTA IMPLEMENTAR
+                    iniciarVotacao()#EM TESTE
                 case 4:
                     ApuracaoVotos()#FALTA IMPLEMENTAR
                 case 5:
