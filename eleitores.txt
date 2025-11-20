@@ -18,3 +18,7 @@ Thiago Alves, SP77665544, 369147258369, Sorocaba, SP
 Letícia Souza, RJ44556677, 159753486215, Duque de Caxias, RJ
 Gabriel Lima, MG55667788, 357159486213, Poços de Caldas, MG
 Isabela Costa, SP88776655, 486213579426, São José dos Campos, SP
+Guilherme Hermes, MG15421542, 012345678910, Lavras, MG
+Manuel Victor, MG15441544, 012345678911, Lavras, MG
+Hian Oliveira, MG15431543, 012345678912, Lavras, MG
+Matheus Rodrigues, MG15411541, 012345678913, Lavras, MG

@@ -49,7 +49,7 @@ def lerArquivoCandidato():
             for linha in arq: # "Linha por linha, faça o seguinte: "
                 linha = linha.strip() # strip para dividir em partes iguais, removendo os espaços
                 if not linha: # Se a linha estiver agora vazia, prossiga.
-                    continue # Depois daqui vai pra linha 44 (partes = linha.split(",")
+                    continue # Depois daqui vai pra linha 54 (partes = linha.split(",")
                     
                 partes = linha.split(",") # Divide a linha usando vírgula como delimitador, criando uma lista de partes.
                 if len(partes) != 5: # 5 se refere aos campos: Nome, Numero, Partido, UF e Cargo
@@ -116,8 +116,41 @@ def ApuracaoVotos():
 # ==========================================================
 def lerArquivoEleitores():
     limpar_tela()
-    """Aqui deve constar o algoritmo de mostrar_resultados()"""
-    print("Aqui deve constar o algoritmo de mostrar_resultados()")
+    global eleitores, eleitores_file
+    eleitores = []
+
+    eleitores_file = input("Digite o nome do arquivo de eleitores (eleitores.txt): ").strip()
+    if not eleitores_file:
+        eleitores_file = "eleitores.txt"
+    
+    try:
+        with open(eleitores_file ,"r", encoding= "utf-8") as arquivo:
+            for linha in arquivo:
+                linha = linha.strip()
+                if not linha:
+                    continue
+
+                partes = linha.split(",")
+                if len(partes) !=5:
+                    print(f"!!! Linha ignorada (formato inválido): {linha}")
+                    continue
+
+                nome, rg, titulo, municipio, estado = partes
+
+                eleitores.append({
+                    "nome": nome.strip(),
+                    "rg": rg.strip(),
+                    "titulo": titulo.strip(),
+                    "municipio": municipio.strip().upper(),
+                    "estado": estado.strip().upper()
+                })
+        limpar_tela()
+        print(f"✔ Arquivo de eleitores carregado com sucesso!\n(Com um total de {len(eleitores)} eleitores)\n")
+        time.sleep(3)
+    except FileNotFoundError: 
+        print(f"❌ Arquivo '{eleitores_file}' não encontrado.\n")
+    except Exception as erro:
+        print(f"❌ Erro ao ler o arquivo: {erro}\n") 
     input("\nPressione ENTER para retornar...")
     return
 
