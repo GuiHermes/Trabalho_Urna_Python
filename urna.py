@@ -1,7 +1,9 @@
 from os import system, name
 import pickle # Aula 19-11-2025 Ciclo 4
 import time
+from colorama import init, Fore, Style
 
+init(autoreset=True)
 """
 =============================================
 # Trabalho Final - Urna Eletrônica
@@ -22,7 +24,24 @@ def limpar_tela():
 
 limpar_tela()
 
+# ==========================================================
+# BOAS-VINDAS
+# ==========================================================
 
+def menu_boas_vindas():
+    limpar_tela()
+    print(Fore.CYAN + "=" * 50)
+    print(Fore.GREEN + Style.BRIGHT + "       BEM-VINDO AO SISTEMA DE URNA ELETRÔNICA")
+    print(Fore.CYAN + "=" * 50)
+    print()
+    print(Fore.YELLOW + "Projeto final – Estruturas de Dados – UNILAVRAS")
+    print(Fore.YELLOW + "Desenvolvido por: Guilherme Hermes, Manuel Victor, Hian Oliveira, Matheus Rodrigues")
+    print(Fore.CYAN + "-" * 50)
+    print(Style.RESET_ALL)
+
+    input(Fore.MAGENTA + "\nPressione ENTER para continuar..." + Style.RESET_ALL)
+    limpar_tela()
+    
 # ==========================================================
 # VARIÁVEIS GLOBAIS
 # ==========================================================
@@ -233,14 +252,15 @@ def menu():
     global candidatos_file, eleitores_file, candidatos, eleitores
     while True:
         limpar_tela() 
-        print("\n" + "=" * 10 + "[ MENU PRINCIPAL ]" + "=" * 10)
+        print(f"{Fore.MAGENTA}\n" + "=" * 10 + "[ MENU PRINCIPAL ]" + "=" * 10)
         print("1 - Selecionar arquivo de Candidatos")
         print("2 - Selecionar arquivo de Eleitores")
         print("3 - Iniciar votação")
         print("4 - Apurar votos")
         print("5 - Mostrar resultados")
         print("6 - Fechar programa")
-        print("=" * 38)
+        print(Fore.MAGENTA +"=" * 38)
+        print(Style.RESET_ALL)
         try:
             opcaoMenu = int(input("Digite a opção desejada: "))
             match opcaoMenu:
@@ -271,5 +291,6 @@ def menu():
 # INICIAR SISTEMA
 # ==========================================================
 if __name__ == "__main__":
+    menu_boas_vindas()
     menu()
 
