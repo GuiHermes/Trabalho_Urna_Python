@@ -30,7 +30,7 @@ candidatos = []
 eleitores = []
 eleitores_file = ""
 candidatos_file = ""
-titulos_computados = set() #guarda os titulos de eleitores que já votaram
+titulos_computados = set() # guarda os titulos de eleitores que já votaram
 
 
 # ==========================================================
@@ -91,7 +91,7 @@ def iniciar_votacao():
     limpar_tela()
     filtro_eleitores_uf = [] #filtra os eleitores pela UF
     filtro_candidatos_uf = [] #Filtra os candidatos pela UF
-    filtro_presidente =[] #filtra os candidatos a presidente da republica
+    filtro_presidente = [] #filtra os candidatos a presidente da republica
     try:
         uf_urna = input("Digite a UF da urna: ").strip().upper()
         if len(uf_urna) != 2:
@@ -132,7 +132,7 @@ def iniciar_votacao():
 
         if eleitor_encontrado:
             print(f"Eleitor: {eleitor_encontrado.get('nome','<sem nome>')}")
-            print(f"Estado: {eleitor_encontrado.get('uf', eleitor_encontrado.get('estado','--'))}")
+            print(f"Estado: {eleitor_encontrado.get('uf')}")
             
             
             # IMPLEMENTAR AQUI O RESTO DA FUNÇÃO #
@@ -272,3 +272,4 @@ def menu():
 # ==========================================================
 if __name__ == "__main__":
     menu()
+
