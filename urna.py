@@ -30,12 +30,13 @@ candidatos = []
 eleitores = []
 eleitores_file = ""
 candidatos_file = ""
+titulos_computados = set() #guarda os titulos de eleitores que já votaram
 
 
 # ==========================================================
 # LER ARQUIVO DE CANDIDATOS
 # ==========================================================
-def lerArquivoCandidato():
+def ler_arquivo_candidatos():
     limpar_tela()
     global candidatos, candidatos_file
     candidatos = [] # Resetar os candidatos, para fazer uma nova leitura
@@ -56,18 +57,18 @@ def lerArquivoCandidato():
                     print(f"!!! Linha ignorada (formato inválido): {linha}") # Tem que ter exatamente 5 partes, senao: Messagem de Erro
                     continue
                     
-                nome, numero, partido, estado, cargo = partes # Unpacking
+                nome, numero, partido, uf, cargo = partes # Unpacking
 
                 candidatos.append({
                     "nome": nome.strip(),
                     "numero": numero.strip(),
                     "partido": partido.strip(),
-                    "estado": estado.strip().upper(),   # Padronizado em caixa alta para facilitar busca
+                    "uf": uf.strip().upper(),   # Padronizado em caixa alta para facilitar busca
                     "cargo": cargo.strip().upper()   # Padronizado em caixa alta para facilitar busca
                 })
         limpar_tela()
         print(f"✔ Arquivo de candidatos carregado com sucesso!\n(Com um total de {len(candidatos)} candidatos)\n")
-        time.sleep(3) # Aguarda 3 segundos e retorna para tela principal
+        time.sleep(2) # Aguarda 3 segundos e retorna para tela principal
 
     except FileNotFoundError: 
         print(f"❌ Arquivo '{candidatos_file}' não encontrado.\n")
@@ -80,31 +81,84 @@ def lerArquivoCandidato():
 # ==========================================================
 # INICIAR VOTAÇÃO
 # ==========================================================
-def iniciarVotacao():
+def iniciar_votacao():
     limpar_tela()
-    if len(candidatos) == 0: # [ if len(candidatos) == 0 or len(eleitores) == 0 ] Para as duas Leituras. Atual é Teste de condição de leitura de candidatos somente.
+    if len(candidatos) == 0 or len(eleitores) == 0: # Para as duas Leituras. Atual é Teste de condição de leitura de candidatos somente.
         print("\n❌ Você deve carregar candidatos e eleitores antes de solicitar resultados.\n")
         time.sleep(3)
         input("\nPressione ENTER para retornar...")
         return
     limpar_tela()
-    """Aqui deve constar o algoritmo de mostrar_resultados()"""
-    print("Se você está vendo esta tela, \nsignifica que os arquivos foram lidos e esta função está funcionando corretamente.")
-    input("\nPressione ENTER para retornar...")
-    return
+    filtro_eleitores_uf = [] #filtra os eleitores pela UF
+    filtro_candidatos_uf = [] #Filtra os candidatos pela UF
+    filtro_presidente =[] #filtra os candidatos a presidente da republica
+    try:
+        uf_urna = input("Digite a UF da urna: ").strip().upper()
+        if len(uf_urna) != 2:
+            print("UF inválida.")
+            input("\nENTER para retornar...")
+            return
+        
+        for c in candidatos:
+            cargo = str(c.get("cargo", "")).strip().upper()
+            uf_candidatos = str(c.get("uf", "")).strip().upper()
+            if cargo == "P":
+                filtro_presidente.append(c)
+            if uf_candidatos == uf_urna:
+                filtro_candidatos_uf.append(c)
+        
+        for e in eleitores:
+            uf_eleitores = str(e.get("uf")).strip().upper()
+            if uf_eleitores == uf_urna:
+                filtro_eleitores_uf.append(e)
+        
+        titulo_eleitor = input("Informe o Título de Eleitor: ").strip()
+        if not titulo_eleitor:
+            print("Título vazio. Operação cancelada.")
+            input("\nENTER...")
+            return
+        
+        if titulo_eleitor in titulos_computados:
+            print("O usuário já votou.")
+            input("\nENTER para retornar...")
+            return
 
+        eleitor_encontrado = None
+        for e in filtro_eleitores_uf:
+            if str(e.get("titulo", "")).strip() == titulo_eleitor:
+                eleitor_encontrado = e
+                break
+        
+
+        if eleitor_encontrado:
+            print(f"Eleitor: {eleitor_encontrado.get('nome','<sem nome>')}")
+            print(f"Estado: {eleitor_encontrado.get('uf', eleitor_encontrado.get('estado','--'))}")
+            
+            
+            # IMPLEMENTAR AQUI O RESTO DA FUNÇÃO #
+
+        else:
+            print("Eleitor não encontrado na UF.")
+        input("\nPressione ENTER para retornar...")
+        return
+        
+    except Exception as e:
+        print(e)
 
 # ==========================================================
 # APURAÇÃO DOS VOTOS
 # ==========================================================
-def ApuracaoVotos():
+def apurar_votos():
     limpar_tela()
-    if len(candidatos) == 0: # [ if len(candidatos) == 0 or len(eleitores) == 0 ] Para as duas Leituras. Atual é Teste de condição de leitura de candidatos somente.
+    if len(candidatos) == 0 or len(eleitores) == 0:#Para as duas Leituras. Atual é Teste de condição de leitura de candidatos somente.
         print("\n❌ Você deve carregar candidatos e eleitores antes de solicitar apuração de votos.\n")
         time.sleep(3)
         input("\nPressione ENTER para retornar...")
         return
     limpar_tela()
+
+
+
     """Aqui deve constar o algoritmo de apuracao_votos()"""
     print("Se você está vendo esta tela, \nsignifica que os arquivos foram lidos e esta função está funcionando corretamente.")
     input("\nPressione ENTER para retornar...")
@@ -114,7 +168,7 @@ def ApuracaoVotos():
 # ==========================================================
 # LER ARQUIVO DE ELEITORES
 # ==========================================================
-def lerArquivoEleitores():
+def ler_arquivos_eleitores():
     limpar_tela()
     global eleitores, eleitores_file
     eleitores = []
@@ -135,18 +189,18 @@ def lerArquivoEleitores():
                     print(f"!!! Linha ignorada (formato inválido): {linha}")
                     continue
 
-                nome, rg, titulo, municipio, estado = partes
+                nome, rg, titulo, municipio, uf = partes
 
                 eleitores.append({
                     "nome": nome.strip(),
                     "rg": rg.strip(),
                     "titulo": titulo.strip(),
                     "municipio": municipio.strip().upper(),
-                    "estado": estado.strip().upper()
+                    "uf": uf.strip().upper()
                 })
         limpar_tela()
         print(f"✔ Arquivo de eleitores carregado com sucesso!\n(Com um total de {len(eleitores)} eleitores)\n")
-        time.sleep(3)
+        time.sleep(2)
     except FileNotFoundError: 
         print(f"❌ Arquivo '{eleitores_file}' não encontrado.\n")
     except Exception as erro:
@@ -158,7 +212,7 @@ def lerArquivoEleitores():
 # ==========================================================
 # MOSTRAR RESULTADOS + BOLETIM
 # ==========================================================
-def MostrarResultados():
+def mostrar_resultado():
     limpar_tela()
     if len(candidatos) == 0: # [ if len(candidatos) == 0 or len(eleitores) == 0 ] Para as duas Leituras. Atual é Teste de condição de leitura de candidatos somente.
         print("\n❌ Você deve carregar candidatos e eleitores antes de solicitar resultados.\n")
@@ -191,15 +245,15 @@ def menu():
             opcaoMenu = int(input("Digite a opção desejada: "))
             match opcaoMenu:
                 case 1:
-                    lerArquivoCandidato()
+                    ler_arquivo_candidatos()
                 case 2:
-                    lerArquivoEleitores()
+                    ler_arquivos_eleitores()
                 case 3:
-                    iniciarVotacao()#EM TESTE
+                    iniciar_votacao()#EM TESTE
                 case 4:
-                    ApuracaoVotos()#FALTA IMPLEMENTAR
+                    apurar_votos()#FALTA IMPLEMENTAR
                 case 5:
-                    MostrarResultados()#FALTA IMPLEMENTAR
+                    mostrar_resultado()#FALTA IMPLEMENTAR
                 case 6:
                     limpar_tela()
                     print("\nEncerrando sistema...")
