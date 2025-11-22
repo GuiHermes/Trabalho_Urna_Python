@@ -50,6 +50,7 @@ eleitores = []
 eleitores_file = ""
 candidatos_file = ""
 titulos_computados = set() # guarda os titulos de eleitores que já votaram
+resultados_apurados = {} # Variável pra armazenar a contagem dos votos
 CARGOS_INFO = {
     "F": {"nome": "Deputado Federal", "digitos": 4},
     "E": {"nome": "Deputado Estadual", "digitos": 5},
@@ -257,7 +258,7 @@ def iniciar_votacao():
     input("Pressione ENTER para retornar ao menu principal...")
     return
         
-            # IMPLEMENTAR AQUI O RESTO DA FUNÇÃO #
+            
 
 
 # ==========================================================
@@ -265,12 +266,56 @@ def iniciar_votacao():
 # ==========================================================
 def apurar_votos():
     limpar_tela()
-    if len(candidatos) == 0 or len(eleitores) == 0:#Para as duas Leituras. Atual é Teste de condição de leitura de candidatos somente.
-        print("\n❌ Você deve carregar candidatos e eleitores antes de solicitar apuração de votos.\n")
-        time.sleep(3)
-        input("\nPressione ENTER para retornar...")
-        return
-    limpar_tela()
+    global resultados_apurados
+
+    print(Fore.CYAN + "Iniciando apuração dos votos...")
+    time.sleep(1)
+
+    # Estrutura para guardar a contagem
+    # Exemplo: 'P': {'validos': {'13': 10, '22': 5}, 'brancos': 0, 'nulos': 0, 'total': 0}
+    contagem = {}
+    for sigla in CARGOS_INFO.keys():
+        contagem[sigla] = {'validos': {}, 'brancos': 0, 'nulos': 0, 'total': 0}
+
+    try:
+        with open("votos.bin", "rb") as arquivo:
+            while True:
+                try:
+                    # Lê um voto (dicionário) do arquivo binário
+                    voto = pickle.load(arquivo)
+                    
+                    # Itera sobre os cargos (P, G, S, F, E)
+                    for sigla in CARGOS_INFO.keys():
+                        escolha = voto.get(sigla)
+                        
+                        contagem[sigla]['total'] += 1
+
+                        if escolha == 'B':
+                            contagem[sigla]['brancos'] += 1
+                        elif escolha == 'N':
+                            contagem[sigla]['nulos'] += 1
+                        else:
+                            # É um voto numérico (válido)
+                            if escolha in contagem[sigla]['validos']:
+                                contagem[sigla]['validos'][escolha] += 1
+                            else:
+                                contagem[sigla]['validos'][escolha] = 1
+
+                except EOFError:
+                    break # Fim do arquivo
+        
+        # Salva na variável global para ser usada em "Mostrar Resultados"
+        resultados_apurados = contagem
+        print(Fore.GREEN + "✔ Apuração concluída com sucesso!")
+        print(Fore.YELLOW + "Vá para a opção 5 para ver os vencedores e gerar o boletim.")
+
+    except FileNotFoundError:
+        print(Fore.RED + "❌ Nenhum voto foi registrado ainda (arquivo 'votos.bin' não existe).")
+    except Exception as e:
+        print(Fore.RED + f"❌ Erro na apuração: {e}")
+
+    input("\nPressione ENTER para retornar...")
+    return
 
 
 
@@ -329,14 +374,73 @@ def ler_arquivos_eleitores():
 # ==========================================================
 def mostrar_resultado():
     limpar_tela()
-    if len(candidatos) == 0: # [ if len(candidatos) == 0 or len(eleitores) == 0 ] Para as duas Leituras. Atual é Teste de condição de leitura de candidatos somente.
-        print("\n❌ Você deve carregar candidatos e eleitores antes de solicitar resultados.\n")
-        time.sleep(3)
+    
+    # Verifica se a apuração já foi feita
+    if not resultados_apurados:
+        print(Fore.RED + "❌ É necessário realizar a Apuração (Opção 4) antes de ver os resultados.")
         input("\nPressione ENTER para retornar...")
         return
-    limpar_tela()
-    """Aqui deve constar o algoritmo de mostrar_resultados()"""
-    print("Se você está vendo esta tela, \nsignifica que os arquivos foram lidos e esta função está funcionando corretamente.")
+
+    print(Fore.CYAN + "=" * 50)
+    print(Fore.GREEN + Style.BRIGHT + "RESULTADO DAS ELEIÇÕES")
+    print(Fore.CYAN + "=" * 50 + "\n")
+
+    conteudo_boletim = []
+    conteudo_boletim.append("=" * 50)
+    conteudo_boletim.append("BOLETIM DE URNA - UNILAVRAS 2025")
+    conteudo_boletim.append("=" * 50 + "\n")
+
+    # Ordem de exibição: Presidente, Governador, Senador, Deputados
+    ordem_exibicao = ["P", "G", "S", "F", "E"]
+
+    for sigla in ordem_exibicao:
+        info_cargo = CARGOS_INFO[sigla]
+        dados_votos = resultados_apurados[sigla]
+        
+        titulo = f"--- {info_cargo['nome']} ---"
+        print(Fore.YELLOW + titulo)
+        conteudo_boletim.append(titulo)
+
+        # Ordenar os candidatos por número de votos (do maior para o menor)
+        # item[0] é o numero do candidato, item[1] é a qtd de votos
+        ranking = sorted(dados_votos['validos'].items(), key=lambda item: item[1], reverse=True)
+
+        if len(ranking) == 0:
+            msg = "Nenhum voto válido registrado para este cargo."
+            print(msg)
+            conteudo_boletim.append(msg)
+        
+        for numero_cand, qtd_votos in ranking:
+            # Buscar nome do candidato na lista global 'candidatos'
+            nome_candidato = "Desconhecido/Outra UF"
+            partido_candidato = ""
+            
+            for c in candidatos:
+                # Verifica se numero e cargo batem
+                if c['numero'] == numero_cand and c['cargo'] == sigla:
+                    nome_candidato = c['nome']
+                    partido_candidato = c['partido']
+                    break
+            
+            linha_result = f"{numero_cand} - {nome_candidato} ({partido_candidato}): {qtd_votos} votos"
+            print(linha_result)
+            conteudo_boletim.append(linha_result)
+
+        # Resumo Brancos e Nulos
+        resumo = f"Brancos: {dados_votos['brancos']} | Nulos: {dados_votos['nulos']} | TOTAL: {dados_votos['total']}"
+        print(Fore.CYAN + resumo + "\n")
+        conteudo_boletim.append(resumo + "\n")
+        conteudo_boletim.append("-" * 30)
+
+    # Gravar Boletim em TXT
+    try:
+        with open("boletim_urna.txt", "w", encoding="utf-8") as f:
+            for linha in conteudo_boletim:
+                f.write(linha + "\n")
+        print(Fore.GREEN + "📄 Arquivo 'boletim_urna.txt' gerado com sucesso na pasta do projeto!")
+    except Exception as e:
+        print(Fore.RED + f"Erro ao gravar boletim: {e}")
+
     input("\nPressione ENTER para retornar...")
     return
 
@@ -389,4 +493,3 @@ def menu():
 if __name__ == "__main__":
     menu_boas_vindas()
     menu()
-
