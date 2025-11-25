@@ -316,14 +316,7 @@ def apurar_votos():
 
     input("\nPressione ENTER para retornar...")
     return
-
-
-
-    """Aqui deve constar o algoritmo de apuracao_votos()"""
-    print("Se você está vendo esta tela, \nsignifica que os arquivos foram lidos e esta função está funcionando corretamente.")
-    input("\nPressione ENTER para retornar...")
-    return
-
+    
 
 # ==========================================================
 # LER ARQUIVO DE ELEITORES
@@ -469,11 +462,11 @@ def menu():
                 case 2:
                     ler_arquivos_eleitores()
                 case 3:
-                    iniciar_votacao()#OK
+                    iniciar_votacao()
                 case 4:
-                    apurar_votos()#FALTA IMPLEMENTAR
+                    apurar_votos()
                 case 5:
-                    mostrar_resultado()#FALTA IMPLEMENTAR
+                    mostrar_resultado()
                 case 6:
                     limpar_tela()
                     print("\nEncerrando sistema...")
@@ -493,3 +486,4 @@ def menu():
 if __name__ == "__main__":
     menu_boas_vindas()
     menu()
+
