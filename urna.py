@@ -4,8 +4,11 @@ import pickle
 import time
 from colorama import init, Fore, Style
 import pygame # importei para a biblioteca de som
+import matplotlib.pyplot as plt # importei para gráficos 
+import random
 
 init(autoreset=True)
+
 
 """
 =============================================
@@ -398,6 +401,49 @@ def ler_arquivos_eleitores():
     return
 
 
+
+# ==========================================================
+# CRIAR GRÁFICOS 
+# ==========================================================
+
+def gera_grafico(titulo, votos, brancos=0, nulos=0):
+  
+
+    # Junta candidatos + nulos
+    nomes = list(votos.keys()) + ["Nulos"]
+    quantidades = list(votos.values()) + [brancos, nulos]
+
+    # Gera cores diferentes para cada barra
+    cores = []
+    for _ in nomes:
+        cores.append((random.random(), random.random(), random.random()))
+
+    plt.figure(figsize=(12, 8))
+
+    # GRÁFICO VERTICAL
+    barras = plt.bar(nomes, quantidades, color=cores)
+
+    plt.title(titulo, fontsize=18)
+    plt.ylabel("Quantidade de votos", fontsize=14)
+    plt.xlabel("Candidatos", fontsize=14)
+    plt.xticks(rotation=45, ha='right')
+
+    # Exibe valores acima das barras
+    for barra in barras:
+        height = barra.get_height()
+        plt.text(
+            barra.get_x() + barra.get_width()/2,  
+            height + 0.3,                         
+            str(int(height)),
+            ha='center',
+            va='bottom'
+        )
+
+    plt.tight_layout()
+    plt.show()
+
+
+
 # ==========================================================
 # MOSTRAR RESULTADOS + BOLETIM
 # ==========================================================
@@ -448,6 +494,20 @@ def mostrar_resultado():
             linha_result = f"{numero_cand} - {nome_candidato} ({partido_candidato}): {qtd_votos} votos"
             print(linha_result)
             conteudo_boletim.append(linha_result)
+        
+        votos_grafico = {}
+
+        for c in candidatos:
+            if c['cargo'] == sigla:
+                chave = f"{c['nome']} ({c['numero']})"
+                votos_grafico[chave] = dados_votos['validos'].get(c['numero'], 0)
+
+        gera_grafico(
+            f"Apuração - {info_cargo['nome']}",
+            votos_grafico,
+            nulos=dados_votos['nulos']
+)        
+
 
         resumo = f"Brancos: {dados_votos['brancos']} | Nulos: {dados_votos['nulos']} | TOTAL: {dados_votos['total']}"
         print(Fore.CYAN + resumo + "\n")
@@ -461,6 +521,7 @@ def mostrar_resultado():
         print(Fore.GREEN + "📄 Arquivo 'boletim_urna.txt' gerado com sucesso na pasta do projeto!")
     except Exception as e:
         print(Fore.RED + f"Erro ao gravar boletim: {e}")
+        
 
     input("\nPressione ENTER para retornar...")
     return
