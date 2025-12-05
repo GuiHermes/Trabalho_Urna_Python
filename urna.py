@@ -410,7 +410,7 @@ def gera_grafico(titulo, votos, brancos=0, nulos=0):
   
 
     # Junta candidatos + nulos
-    nomes = list(votos.keys()) + ["Nulos"]
+    nomes = list(votos.keys()) + ["Brancos","Nulos"]
     quantidades = list(votos.values()) + [brancos, nulos]
 
     # Gera cores diferentes para cada barra
@@ -574,4 +574,5 @@ def menu():
 # ==========================================================
 if __name__ == "__main__":
     menu_boas_vindas()
+
     menu()
